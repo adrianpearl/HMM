@@ -9,51 +9,55 @@ words = ["yes", "no", "up", "down", "on", "off"]
 np.set_printoptions(precision=5, linewidth=120, suppress=False)
 
 yes_hmm = GaussianMixtureHMM.loadModel("yes")
+no_hmm = GaussianMixtureHMM.loadModel("no")
 on_hmm = GaussianMixtureHMM.loadModel("on")
+off_hmm = GaussianMixtureHMM.loadModel("off")
 up_hmm = GaussianMixtureHMM.loadModel("up")
+down_hmm = GaussianMixtureHMM.loadModel("down")
+
 #hmm.printmodel()
 
 #logps=[]
+for word in ["on"]:
 
-print("testing " + testword)
-test = np.loadtxt("X_test/" + testword + "/X.csv", delimiter=",")
-sequence_lengths = np.loadtxt("X_test/" + testword + "/S.csv", delimiter="\n").astype(int)
-#sequence_lengths = sequence_lengths[0:200]
-#yes_train = on_train[0:np.sum(sequence_lengths)]
+    """
+    wordlogps = []
+    print("testing " + word)
+    test = np.loadtxt("X_test/" + word + "/X.csv", delimiter=",")
+    sequence_lengths = np.loadtxt("X_test/" + word + "/S.csv", delimiter="\n").astype(int)
 
-yeslogps = yes_hmm.logps(test, sequence_lengths)
-uplogps = up_hmm.logps(test, sequence_lengths)
-onlogps = on_hmm.logps(test, sequence_lengths)
+    t = np.arange(0, sequence_lengths.shape[0], 1)
+    start = 0
+    for i, length in enumerate(sequence_lengths):
+        if i%20 == 0:
+            print(i)
 
-print("yes:")
-print(yeslogps)
-print("up:")
-print(uplogps)
-print("on:")
-print(onlogps)
+        utterance = test[start : start+length]
 
-#logps.append(yeslogps)
+        logps = [yes_hmm.logpsequence(utterance), no_hmm.logpsequence(utterance), up_hmm.logpsequence(utterance), down_hmm.logpsequence(utterance), on_hmm.logpsequence(utterance), off_hmm.logpsequence(utterance)]
+        #print([int(i) for i in logps])
+        wordlogps.append(logps)
+        start = start+length
 
+    result = np.array(wordlogps)
+    np.savetxt("testing/%s.csv" % (word), result, delimiter=",", fmt="%1.5g")
+    """
 
+    result = np.loadtxt("testing/%s.csv" % (word), delimiter=",")
+
+    plt.figure(1)
+    plt.plot(result[:,0], 'r-')
+    plt.plot(result[:,1], 'r-')
+    plt.plot(result[:,2], 'r-')
+    plt.plot(result[:,3], 'r-')
+    plt.plot(result[:,4], 'b-')
+    plt.plot(result[:,5], 'r-')
+
+    plt.show()
+
+    break
 
 """
-X_yes = np.loadtxt("X_train/yes/X.csv", delimiter=",")
-sequence_lengths = np.loadtxt("X_train/yes/S.csv", delimiter="\n").astype(int)
-
-start = np.sum(sequence_lengths[0:100].astype(int))
-lengths = sequence_lengths[100:200].astype(int)
-end = start + np.sum(lengths)
-sx = X_yes[start:end]
-wordlogps = hmm.logps(sx, lengths)
-print(testword + " - testing:")
-print(wordlogps)
-"""
-
-"""
-obs = np.array([19.883, -9.5539, -16.605, 36.871, -21.879, -58.377, -9.9939, -26.14, -20.481, 25.459, -25.944, 12.437, 13.862])
-mean = np.array([18.60888, -37.51102, 17.40778, -11.99703, -11.4298, 25.80397, -36.96028, 25.07043, -15.80151, 12.18687, -6.33444, -0.96385, -2.92354])
-cov = np.array([1.06785, 27.80559, 12.07332, 15.17684, 22.93452, 23.46364, 41.6248, 33.05901, 56.25807, 69.85563, 91.65027, 34.82063, 42.54343])
-
 print(mvGaussian(obs, mean, np.diag(cov)))
 
 hmm = MultinomialHMM(2, 2)

@@ -2,7 +2,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.mlab as mlab
+import math
 
+mu = 0
+variance = 1
+mu2 = 2
+variance2 = 10
+sigma = math.sqrt(variance)
+sigma2 = math.sqrt(variance2)
+x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+plt.plot(x,mlab.normpdf(x, mu, sigma))
+plt.plot(x,mlab.normpdf(x, mu2, sigma2))
+plt.show()
+
+'''
 # Our 2-dimensional distribution will be over variables X and Y
 N = 60
 X = np.linspace(-3, 3, N)
@@ -11,7 +25,9 @@ X, Y = np.meshgrid(X, Y)
 
 # Mean vector and covariance matrix
 mu = np.array([0., 1.])
+mu2 = np.array([1., 0.])
 Sigma = np.array([[ 1. , 0], [0,  1]])
+Sigma2 = np.array([[ 3. , 0], [0,  3.]])
 
 # Pack X and Y into a single 3-dimensional array
 pos = np.empty(X.shape + (2,))
@@ -38,11 +54,14 @@ def multivariate_gaussian(pos, mu, Sigma):
 
 # The distribution on the variables X, Y packed into pos.
 Z = multivariate_gaussian(pos, mu, Sigma)
+Z2 = multivariate_gaussian(pos, mu2, Sigma2)
 
 # Create a surface plot and projected filled contour plot under it.
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 ax.plot_surface(X, Y, Z, rstride=3, cstride=3, linewidth=1, antialiased=True,
+                cmap=cm.viridis)
+ax.plot_surface(X, Y, Z2, rstride=3, cstride=3, linewidth=1, antialiased=True,
                 cmap=cm.viridis)
 
 cset = ax.contourf(X, Y, Z, zdir='z', offset=-0.15, cmap=cm.viridis)
@@ -51,5 +70,6 @@ cset = ax.contourf(X, Y, Z, zdir='z', offset=-0.15, cmap=cm.viridis)
 ax.set_zlim(-0.15,0.2)
 ax.set_zticks(np.linspace(0,0.2,5))
 ax.view_init(27, -21)
+'''
 
-plt.show()
+#plt.show()
